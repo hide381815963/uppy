@@ -3,8 +3,8 @@
  */
 function findUppyInstances () {
   const instances = []
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i)
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const key = sessionStorage.key(i)
     if (/^uppyState:/.test(key)) {
       instances.push(key.slice('uppyState:'.length))
     }
@@ -42,7 +42,7 @@ module.exports = class MetaDataStore {
    *
    */
   load () {
-    const savedState = localStorage.getItem(this.name)
+    const savedState = sessionStorage.getItem(this.name)
     if (!savedState) return null
     const data = maybeParse(savedState)
     if (!data) return null
@@ -63,7 +63,7 @@ module.exports = class MetaDataStore {
       metadata,
       expires,
     })
-    localStorage.setItem(this.name, state)
+    sessionStorage.setItem(this.name, state)
   }
 
   /**
@@ -71,20 +71,20 @@ module.exports = class MetaDataStore {
    */
   static cleanup (instanceID) {
     if (instanceID) {
-      localStorage.removeItem(`uppyState:${instanceID}`)
+      sessionStorage.removeItem(`uppyState:${instanceID}`)
       return
     }
 
     const instanceIDs = findUppyInstances()
     const now = Date.now()
     instanceIDs.forEach((id) => {
-      const data = localStorage.getItem(`uppyState:${id}`)
+      const data = sessionStorage.getItem(`uppyState:${id}`)
       if (!data) return null
       const obj = maybeParse(data)
       if (!obj) return null
 
       if (obj.expires && obj.expires < now) {
-        localStorage.removeItem(`uppyState:${id}`)
+        sessionStorage.removeItem(`uppyState:${id}`)
       }
     })
   }

@@ -68,12 +68,12 @@ function buildPluginsList () {
     let plugin
 
     // A few hacks to emulate browser environment because e.g.:
-    // GoldenRetrieves calls upon MetaDataStore in the constructor, which uses localStorage
+    // GoldenRetrieves calls upon MetaDataStore in the constructor, which uses sessionStorage
     // @TODO Consider rewriting constructors so they don't make imperative calls that rely on
     // browser environment (OR: just keep this browser mocking, if it's only causing issues for this script, it doesn't matter)
     global.location = { protocol: 'https' }
     global.navigator = { userAgent: '' }
-    global.localStorage = {
+    global.sessionStorage = {
       key: () => { },
       getItem: () => { },
     }

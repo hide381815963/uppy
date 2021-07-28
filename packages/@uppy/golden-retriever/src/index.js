@@ -8,7 +8,7 @@ const MetaDataStore = require('./MetaDataStore')
  * The GoldenRetriever plugin — restores selected files and resumes uploads
  * after a closed tab or a browser crash!
  *
- * Uses localStorage, IndexedDB and ServiceWorker to do its magic, read more:
+ * Uses sessionStorage, IndexedDB and ServiceWorker to do its magic, read more:
  * https://uppy.io/blog/2017/07/golden-retriever/
  */
 module.exports = class GoldenRetriever extends Plugin {
@@ -41,8 +41,8 @@ module.exports = class GoldenRetriever extends Plugin {
       storeName: uppy.getID(),
     })
 
-    this.saveFilesStateToLocalStorage = throttle(
-      this.saveFilesStateToLocalStorage.bind(this),
+    this.saveFilesStateTosessionStorage = throttle(
+      this.saveFilesStateTosessionStorage.bind(this),
       500,
       { leading: true, trailing: true }
     )
@@ -103,7 +103,7 @@ module.exports = class GoldenRetriever extends Plugin {
     return uploadingFiles
   }
 
-  saveFilesStateToLocalStorage () {
+  saveFilesStateTosessionStorage () {
     const filesToSave = {
       ...this.getWaitingFiles(),
       ...this.getUploadingFiles(),
@@ -359,7 +359,7 @@ module.exports = class GoldenRetriever extends Plugin {
     this.uppy.on('file-added', this.addBlobToStores)
     this.uppy.on('file-editor:complete', this.replaceBlobInStores)
     this.uppy.on('file-removed', this.removeBlobFromStores)
-    this.uppy.on('state-update', this.saveFilesStateToLocalStorage)
+    this.uppy.on('state-update', this.saveFilesStateTosessionStorage)
     this.uppy.on('restore-confirmed', this.handleRestoreConfirmed)
     this.uppy.on('restore-canceled', this.abortRestore)
     this.uppy.on('complete', this.handleComplete)
@@ -369,7 +369,7 @@ module.exports = class GoldenRetriever extends Plugin {
     this.uppy.off('file-added', this.addBlobToStores)
     this.uppy.off('file-editor:complete', this.replaceBlobInStores)
     this.uppy.off('file-removed', this.removeBlobFromStores)
-    this.uppy.off('state-update', this.saveFilesStateToLocalStorage)
+    this.uppy.off('state-update', this.saveFilesStateTosessionStorage)
     this.uppy.off('restore-confirmed', this.handleRestoreConfirmed)
     this.uppy.off('restore-canceled', this.abortRestore)
     this.uppy.off('complete', this.handleComplete)

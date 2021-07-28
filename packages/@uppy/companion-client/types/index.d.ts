@@ -1,5 +1,5 @@
 /**
- * Async storage interface, similar to `localStorage`. This can be used to
+ * Async storage interface, similar to `sessionStorage`. This can be used to
  * implement custom storages for authentication tokens.
  */
 export interface TokenStorage {
